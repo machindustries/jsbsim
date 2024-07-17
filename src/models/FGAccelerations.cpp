@@ -147,13 +147,15 @@ void FGAccelerations::CalculatePQRdot(void)
     in.Moment += (3.0 * in.vGravAccel.Magnitude() * invRadius) * (R * (in.J * R));
   }
 
-  // Compute body frame rotational accelerations based on the current body
-  // moments and the total inertial angular velocity expressed in the body
-  // frame.
-//  if (HoldDown && !FDMExec->GetTrimStatus()) {
+  // Log the input moments and inertia matrix
+  cout << "Moments: " << in.Moment << endl;
+  cout << "Inertia Matrix (J): " << in.J << endl;
+  cout << "Inverse Inertia Matrix (Jinv): " << in.Jinv << endl;
+  cout << "Total Inertial Angular Velocity (vPQRi): " << in.vPQRi << endl;
+  cout << "Transformation Matrix (Ti2b): " << in.Ti2b << endl;
+  cout << "Planet Angular Velocity (vOmegaPlanet): " << in.vOmegaPlanet << endl;
+
   if (FDMExec->GetHoldDown()) {
-    // The rotational acceleration in ECI is calculated so that the rotational
-    // acceleration is zero in the body frame.
     vPQRdot.InitMatrix();
     vPQRidot = vPQRdot - in.vPQRi * (in.Ti2b * in.vOmegaPlanet);
   }
@@ -161,6 +163,10 @@ void FGAccelerations::CalculatePQRdot(void)
     vPQRidot = in.Jinv * (in.Moment - in.vPQRi * (in.J * in.vPQRi));
     vPQRdot = vPQRidot + in.vPQRi * (in.Ti2b * in.vOmegaPlanet);
   }
+
+  // Log the computed rotational accelerations
+  cout << "Rotational Acceleration (vPQRidot): " << vPQRidot << endl;
+  cout << "Rotational Acceleration (vPQRdot): " << vPQRdot << endl;
 }
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
