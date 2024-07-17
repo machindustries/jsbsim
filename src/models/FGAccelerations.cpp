@@ -157,11 +157,11 @@ void FGAccelerations::CalculatePQRdot(void)
 
   if (FDMExec->GetHoldDown()) {
     vPQRdot.InitMatrix();
-    vPQRidot = vPQRdot - in.vPQRi * (in.Ti2b * in.vOmegaPlanet);
+    vPQRidot = vPQRdot;
   }
   else {
     vPQRidot = in.Jinv * (in.Moment - in.vPQRi * (in.J * in.vPQRi));
-    vPQRdot = vPQRidot + in.vPQRi * (in.Ti2b * in.vOmegaPlanet);
+    vPQRdot = vPQRidot;
   }
 
   // Log the computed rotational accelerations
