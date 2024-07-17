@@ -157,13 +157,15 @@ void FGAccelerations::CalculatePQRdot(void)
 
   if (FDMExec->GetHoldDown()) {
     vPQRdot.InitMatrix();
-    vPQRidot = vPQRdot;
+    vPQRidot = vPQRdot - in.vPQRi * (in.Ti2b * in.vOmegaPlanet);
   }
   else {
     vPQRidot = in.Jinv * (in.Moment - in.vPQRi * (in.J * in.vPQRi));
-    vPQRdot = vPQRidot;
+    vPQRdot = vPQRidot + in.vPQRi * (in.Ti2b * in.vOmegaPlanet);
   }
-
+  // Print out the rotational matrix
+  cout << "Rotational Matrix (Ti2b):" << endl;
+  cout << in.Ti2b << endl;
   // Log the computed rotational accelerations
   cout << "Rotational Acceleration (vPQRidot): " << vPQRidot << endl;
   cout << "Rotational Acceleration (vPQRdot): " << vPQRdot << endl;
