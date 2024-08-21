@@ -17,15 +17,19 @@ double findLowerBound(const std::vector<double>& vec, double value) {
     return *it;
 }
 
+std::vector<double> quantizeVector(const std::vector<double>& coords, double precision = 1e-6) {
+    std::vector<double> quantizedCoords = coords;
+    for (auto& coord : quantizedCoords) {
+        coord = std::round(coord / precision) * precision;
+    }
+    return quantizedCoords;
+}
+
 // Function to get the value at a specific point in the point cloud
 double getValueAtPoint(const PointCloud& points, const std::vector<double>& queryCoords) {
-    // Adjust query coordinates values within epsilon to zero
-    std::vector<double> adjustedQueryCoords = queryCoords;
-    for (auto& value : adjustedQueryCoords) {
-        if (std::abs(value) < EPSILON) {
-            value = 0.0;
-        }
-    }
+    // Adjust query coordinates within epsilon and quantize
+    std::vector<double> adjustedQueryCoords = quantizeVector(queryCoords);
+
     auto it = points.pointMap.find(adjustedQueryCoords);
     if (it != points.pointMap.end()) {
         return it->second;

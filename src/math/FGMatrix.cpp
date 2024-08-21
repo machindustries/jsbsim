@@ -92,6 +92,15 @@ void FGMatrix::Print() const {
     }
 }
 
+// Helper function to quantize coordinates
+std::vector<double> quantizeVector(const std::vector<double>& coords, double precision = 1e-6) {
+    std::vector<double> quantizedCoords = coords;
+    for (auto& coord : quantizedCoords) {
+        coord = std::round(coord / precision) * precision;
+    }
+    return quantizedCoords;
+}
+
 void FGMatrix::populatePointCloud() {
     pointCloud.points.clear();
     pointCloud.pointMap.clear();
@@ -100,8 +109,12 @@ void FGMatrix::populatePointCloud() {
     for (const auto& row : matrix) {
         std::vector<double> coords(row.begin(), row.end() - 1);
         double value = row.back();
-        pointCloud.points.emplace_back(coords, value);
-        pointCloud.pointMap[coords] = value;
+
+        // Quantize the coordinates before inserting into the pointMap
+        std::vector<double> quantizedCoords = quantizeVector(coords);
+
+        pointCloud.points.emplace_back(quantizedCoords, value);
+        pointCloud.pointMap[quantizedCoords] = value;
     }
 
     // Extract unique values for each dimension
