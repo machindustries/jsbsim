@@ -25,31 +25,86 @@ std::vector<double> quantizeVector(const std::vector<double>& coords, double pre
     return quantizedCoords;
 }
 
+#include <iomanip>  // for setting precision
+
 // Function to get the value at a specific point in the point cloud
 double getValueAtPoint(const PointCloud& points, const std::vector<double>& queryCoords) {
     // Adjust query coordinates within epsilon and quantize
     std::vector<double> adjustedQueryCoords = quantizeVector(queryCoords);
 
+    // Print the original query coordinates
+    std::cerr << "Original query coordinates: (";
+    for (size_t i = 0; i < queryCoords.size(); ++i) {
+        std::cerr << std::fixed << std::setprecision(10) << queryCoords[i];
+        if (i < queryCoords.size() - 1) std::cerr << ", ";
+    }
+    std::cerr << ")" << std::endl;
+
+    // Print the adjusted (quantized) query coordinates
+    std::cerr << "Adjusted (quantized) query coordinates: (";
+    for (size_t i = 0; i < adjustedQueryCoords.size(); ++i) {
+        std::cerr << std::fixed << std::setprecision(10) << adjustedQueryCoords[i];
+        if (i < adjustedQueryCoords.size() - 1) std::cerr << ", ";
+    }
+    std::cerr << ")" << std::endl;
+
+    // Attempt to find the quantized query point in the pointMap
     auto it = points.pointMap.find(adjustedQueryCoords);
     if (it != points.pointMap.end()) {
+        std::cerr << "Value found for adjusted query point: " << it->second << std::endl;
         return it->second;
     }
-    
+
+    // If not found, print the size of the pointMap
+    std::cerr << "Point map size: " << points.pointMap.size() << std::endl;
+
+    // Print out all points in the pointMap (for debugging purposes)
+    std::cerr << "Contents of pointMap:" << std::endl;
+    for (const auto& pair : points.pointMap) {
+        std::cerr << "Point: (";
+        for (size_t i = 0; i < pair.first.size(); ++i) {
+            std::cerr << std::fixed << std::setprecision(10) << pair.first[i];
+            if (i < pair.first.size() - 1) std::cerr << ", ";
+        }
+        std::cerr << ") -> Value: " << pair.second << std::endl;
+    }
+
+    // Check for near misses: print points close to the query point
+    std::cerr << "Checking for near misses (points close to query):" << std::endl;
+    for (const auto& pair : points.pointMap) {
+        bool nearMiss = true;
+        for (size_t i = 0; i < pair.first.size(); ++i) {
+            if (std::abs(pair.first[i] - adjustedQueryCoords[i]) > 1e-6) {
+                nearMiss = false;
+                break;
+            }
+        }
+        if (nearMiss) {
+            std::cerr << "Near miss found: (";
+            for (size_t i = 0; i < pair.first.size(); ++i) {
+                std::cerr << std::fixed << std::setprecision(10) << pair.first[i];
+                if (i < pair.first.size() - 1) std::cerr << ", ";
+            }
+            std::cerr << ") -> Value: " << pair.second << std::endl;
+        }
+    }
+
     // Prepare error message with query point details
     std::ostringstream errorMsg;
     errorMsg << "Value not found for query point: (";
     for (size_t i = 0; i < queryCoords.size(); ++i) {
-        errorMsg << queryCoords[i];
+        errorMsg << std::fixed << std::setprecision(10) << queryCoords[i];
         if (i < queryCoords.size() - 1) errorMsg << ", ";
     }
     errorMsg << ")";
-    
+
     // Log error details with stack trace
     std::cerr << "Error in getValueAtPoint: " << errorMsg.str() << std::endl;
-    
+
     // Throw exception with detailed message
     throw std::runtime_error(errorMsg.str());
 }
+
 
 // Recursive function to perform interpolation
 double interpolateRecursive(const std::vector<double>& queryPoint, const PointCloud& points, size_t dim) {
