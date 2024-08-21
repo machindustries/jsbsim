@@ -27,6 +27,8 @@ std::vector<double> quantizeVector(const std::vector<double>& coords, double pre
 
 #include <iomanip>  // for setting precision
 
+#include <limits>  // for bounds checking
+
 // Function to get the value at a specific point in the point cloud
 double getValueAtPoint(const PointCloud& points, const std::vector<double>& queryCoords) {
     // Adjust query coordinates within epsilon and quantize
@@ -47,6 +49,30 @@ double getValueAtPoint(const PointCloud& points, const std::vector<double>& quer
         if (i < adjustedQueryCoords.size() - 1) std::cerr << ", ";
     }
     std::cerr << ")" << std::endl;
+
+    // Bounds checking: Determine if the query point is within the bounds of the point cloud
+    bool outOfBounds = false;
+    for (size_t dim = 0; dim < adjustedQueryCoords.size(); ++dim) {
+        double minVal = std::numeric_limits<double>::max();
+        double maxVal = std::numeric_limits<double>::lowest();
+
+        if (!points.uniqueValues[dim].empty()) {
+            minVal = points.uniqueValues[dim].front();
+            maxVal = points.uniqueValues[dim].back();
+        }
+
+        if (adjustedQueryCoords[dim] < minVal || adjustedQueryCoords[dim] > maxVal) {
+            std::cerr << "Query coordinate out of bounds in dimension " << dim << ": "
+                      << adjustedQueryCoords[dim] << " (min: " << minVal << ", max: " << maxVal << ")" << std::endl;
+            outOfBounds = true;
+        }
+    }
+
+    if (outOfBounds) {
+        std::cerr << "Error: One or more query coordinates are out of bounds." << std::endl;
+    } else {
+        std::cerr << "All query coordinates are within bounds." << std::endl;
+    }
 
     // Attempt to find the quantized query point in the pointMap
     auto it = points.pointMap.find(adjustedQueryCoords);
@@ -104,6 +130,7 @@ double getValueAtPoint(const PointCloud& points, const std::vector<double>& quer
     // Throw exception with detailed message
     throw std::runtime_error(errorMsg.str());
 }
+
 
 
 // Recursive function to perform interpolation
