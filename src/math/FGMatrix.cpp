@@ -93,7 +93,7 @@ void FGMatrix::Print() const {
 }
 
 // Helper function to quantize coordinates
-std::vector<double> quantizeVector(const std::vector<double>& coords, double precision = 1e-6) {
+std::vector<double> _quantizeVector(const std::vector<double>& coords, double precision = 1e-6) {
     std::vector<double> quantizedCoords = coords;
     for (auto& coord : quantizedCoords) {
         coord = std::round(coord / precision) * precision;
@@ -111,7 +111,7 @@ void FGMatrix::populatePointCloud() {
         double value = row.back();
 
         // Quantize the coordinates before inserting into the pointMap
-        std::vector<double> quantizedCoords = quantizeVector(coords);
+        std::vector<double> quantizedCoords = _quantizeVector(coords);
 
         pointCloud.points.emplace_back(quantizedCoords, value);
         pointCloud.pointMap[quantizedCoords] = value;
