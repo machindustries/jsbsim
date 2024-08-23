@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sf.net/JSBSimScript.xsl"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd" name="test_long_ctrl_run">
+  <use aircraft="glide" initialize="ballon_drop" />
+  <output name="glide_50s.csv" rate="100" type="CSV">
+    <rates>ON</rates>
+    <velocities>ON</velocities>
+    <forces>ON</forces>
+    <moments>ON</moments>
+    <position>ON</position>
+    <massprops>ON</massprops>
+    <property>position/vrp-gc-latitude_deg</property>
+    <property>position/vrp-longitude_deg</property>
+    <property>position/vrp-radius-ft</property>
+    <property>accelerations/wdot-ft_sec2</property>
+    <property>accelerations/udot-ft_sec2</property>
+    <property>accelerations/vdot-ft_sec2</property>
+    <property>velocities/thetadot-rad_sec</property>
+    <property>velocities/phidot-rad_sec</property>
+    <property>velocities/psidot-rad_sec</property>
+    <property>fcs/elevator-pos-rad</property>
+    <property>fcs/left-aileron-pos-rad</property>
+    <property>fcs/right-aileron-pos-rad</property>
+    <property>fcs/rudder-pos-rad</property>
+    <property>attitude/roll-rad</property>
+    <property>attitude/pitch-rad</property>
+    <property>attitude/heading-true-rad</property>
+    <property>attitude/psi-rad</property>
+    <property>attitude/theta-rad</property>
+    <property>attitude/phi-rad</property>
+    <property>velocities/u-aero-fps</property>
+    <property>velocities/v-aero-fps</property>
+    <property>velocities/w-aero-fps</property>
+    <property>simulation/integrator/position/translational</property>
+    <property>simulation/integrator/position/rotational</property>
+  </output>
+  <run start="0.0" end="50" dt="0.001">
+    <description>Glide Descent</description>
+    <property>simulation/notify-time-trigger</property>
+    <event name="Time Notify" persistent="true">
+      <description>Output message at 10 second intervals</description>
+      <notify>
+        <property>velocities/vc-kts</property>
+        <property>position/h-agl-ft</property>
+        <property>aero/alpha-rad</property>
+        <property>aero/beta-rad</property>
+        <property>attitude/psi-rad</property>
+        <property>attitude/theta-rad</property>
+        <property>attitude/phi-rad</property>
+        <property>accelerations/wdot-ft_sec2</property>
+        <property>accelerations/udot-ft_sec2</property>
+        <property>accelerations/vdot-ft_sec2</property>
+        <property>velocities/thetadot-rad_sec</property>
+        <property>velocities/phidot-rad_sec</property>
+        <property>velocities/psidot-rad_sec</property>
+        <property>fcs/elevator-pos-rad</property>
+        <property>fcs/left-aileron-pos-rad</property>
+        <property>fcs/rudder-pos-rad</property>
+      </notify>
+      <condition>simulation/sim-time-sec &gt;= simulation/notify-time-trigger</condition>
+      <set name="simulation/notify-time-trigger" value="10" type="delta"></set>
+    </event>
+  </run>
+</runscript>

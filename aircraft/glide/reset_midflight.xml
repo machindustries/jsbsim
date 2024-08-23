@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<initialize name="reset_midflight">
+  <ubody unit="M/SEC">75</ubody>
+  <vbody unit="M/SEC">0</vbody>
+  <wbody unit="M/SEC">0</wbody>
+  <latitude unit="DEG">35.07269</latitude>
+  <longitude unit="DEG">-118.14554</longitude>
+  <phi unit="DEG">0</phi>
+  <theta unit="DEG">0</theta>
+  <psi unit="DEG">45</psi>
+  <altitude unit="M">1500</altitude>
+</initialize>

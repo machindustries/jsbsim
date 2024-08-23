@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<initialize name="ballon_drop">
+  <ubody unit="M/SEC">5</ubody>
+  <vbody unit="M/SEC">0</vbody>
+  <wbody unit="M/SEC">0</wbody>
+  <latitude type="geodetic" unit="DEG"> 34.62250833 </latitude>
+  <longitude unit="DEG"> -117.5426389 </longitude>
+  <altitude unit="M"> 2379.0 </altitude>
+  <elevation unit="M"> 879.0 </elevation>
+  <vt unit="FT/SEC">      0 </vt>
+  <gamma unit="DEG">      0.0 </gamma>
+  <phi unit="DEG">        0.0 </phi>
+  <theta unit="DEG">      -85.0 </theta>
+  <psi unit="DEG">        0.0 </psi>
+</initialize>
